@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from utils import initialize_weights_biases_mlp
+from utils import *
 
 
 class MLP:

@@ -36,15 +36,19 @@ def sigmoid_derivative(x):
     return x * (1 - x)
 
 
-def load_images():
-    # TODO np.eye is hardcoded
+def load_images(eye,dir):
+    """
+
+    :param eye: output layer
+    :return:
+    """
     images = []
     labels = []
     # Loop through the range of values for i and j
     for i in range(5):  # i from 0 to 4
         for j in range(10):  # j from 0 to 9
             # Construct the file path for the image
-            filename = f"data/{i}p{j}.png"
+            filename = f"data/{dir}/{i}p{j}.png"
             try:
                 # Load the image and append it to the list
                 image = np.array(Image.open(filename).convert("L"), dtype="float32") / 255
@@ -54,4 +58,4 @@ def load_images():
             except FileNotFoundError:
                 print(f"File {filename} not found.")
 
-    return np.array(images), np.eye(5)[labels]
+    return np.array(images), np.eye(eye)[labels]

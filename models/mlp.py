@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
-from utils import *
+from models.utils import initialize_weights_biases_mlp
 
 
 class MLP:
@@ -56,7 +57,7 @@ class MLP:
 
     def test_single_image(self):
         while True:
-            index = int(input("Enter a number (0 - 59999): "))
+            index = int(input("Enter a number (0 - 50): "))
             img = self.input_data[index]
             plt.imshow(img.reshape(28, 28), cmap="Greys")
 
@@ -72,12 +73,3 @@ class MLP:
             output = activations[-1]
             plt.title(f"Its  {output.argmax()}")
             plt.show()
-
-
-# Example usage (assuming images and labels are already loaded):
-hidden_layers = [20]  # Example hidden layers
-input_data, data_labels = load_images()
-
-nn = MLP(hidden_layers, input_data, data_labels)
-nn.train(epochs=50, learning_rate=0.01)
-nn.test_single_image()

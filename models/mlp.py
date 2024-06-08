@@ -1,3 +1,5 @@
+import sys
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -21,55 +23,52 @@ class MLP:
 
     def train(self, epochs, learning_rate=0.01):
         correct_guesses = 0
+        log_file = open('mlp_logs.txt', 'w')
+        original_stdout = sys.stdout
 
-        for epoch in range(epochs):
-            for img, l in zip(self.input_data, self.data_labels):
-                img = img.reshape(-1, 1)
-                l = l.reshape(-1, 1)
+        try:
+            sys.stdout = log_file
+            for epoch in range(epochs):
+                for img, l in zip(self.input_data, self.data_labels):
+                    img = img.reshape(-1, 1)
+                    l = l.reshape(-1, 1)
 
-                # Forward propagation
-                activations = [img]
-                for w, b in zip(self.weights, self.biases):
-                    z = np.dot(w, activations[-1]) + b
-                    activation = self.sigmoid(z)
-                    activations.append(activation)
+                    # Forward propagation
+                    activations = [img]
+                    for w, b in zip(self.weights, self.biases):
+                        z = np.dot(w, activations[-1]) + b
+                        activation = self.sigmoid(z)
+                        activations.append(activation)
 
-                # Cost / Error calculation
-                output = activations[-1]
-                error = 1 / len(output) * np.sum((output - l) ** 2, axis=0)
-                correct_guesses += int(np.argmax(output) == np.argmax(l))
+                    # Cost / Error calculation
+                    output = activations[-1]
+                    error = 1 / len(output) * np.sum((output - l) ** 2, axis=0)
+                    correct_guesses += int(np.argmax(output) == np.argmax(l))
 
-                # Backpropagation
-                delta = output - l
-                for i in reversed(range(len(self.weights))):
-                    delta_w = np.dot(delta, activations[i].T)
-                    delta_b = delta
-                    self.weights[i] -= learning_rate * delta_w
-                    self.biases[i] -= learning_rate * delta_b
+                    # Backpropagation
+                    delta = output - l
+                    for i in reversed(range(len(self.weights))):
+                        delta_w = np.dot(delta, activations[i].T)
+                        delta_b = delta
+                        self.weights[i] -= learning_rate * delta_w
+                        self.biases[i] -= learning_rate * delta_b
 
-                    if i != 0:
-                        delta = np.dot(self.weights[i].T, delta) * self.sigmoid_derivative(activations[i])
+                        if i != 0:
+                            delta = np.dot(self.weights[i].T, delta) * self.sigmoid_derivative(activations[i])
+                # Show accuracy for this epoch
+                accuracy = round((correct_guesses / self.input_data.shape[0]) * 100, 2)
+                print(f"Epoch {epoch + 1}/{epochs}, Accuracy: {accuracy}%")
+                correct_guesses = 0
+        finally:
+            sys.stdout = original_stdout
+            log_file.close()
 
-            # Show accuracy for this epoch
-            accuracy = round((correct_guesses / self.input_data.shape[0]) * 100, 2)
-            print(f"Epoch {epoch + 1}/{epochs}, Accuracy: {accuracy}%")
-            correct_guesses = 0
-
-    def test_single_image(self):
-        while True:
-            index = int(input("Enter a number (0 - 50): "))
-            img = self.input_data[index]
-            plt.imshow(img.reshape(28, 28), cmap="Greys")
-
-            img.shape += (1,)
-            # Forward propagation
-            activations = [img]
-            for w, b in zip(self.weights, self.biases):
-                z = np.dot(w, activations[-1]) + b
-                activation = self.sigmoid(z)
-                activations.append(activation)
-
-            # Output result
-            output = activations[-1]
-            plt.title(f"Its  {output.argmax()}")
-            plt.show()
+    def predict(self, img):
+        img.shape += (1,)
+        # Forward propagation
+        activations = [img]
+        for w, b in zip(self.weights, self.biases):
+            z = np.dot(w, activations[-1]) + b
+            activation = self.sigmoid(z)
+            activations.append(activation)
+        return activations[-1].argmax()

@@ -1,6 +1,6 @@
 # KAN VS MLP - Analysis
 
-### This is the final project for course in KIU "ML & AI"
+### This is the final project for course at KIU "ML & AI"
 
 > Contributors
 > 1. Romani Todua

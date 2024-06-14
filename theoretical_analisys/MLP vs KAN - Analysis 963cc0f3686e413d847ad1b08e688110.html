@@ -1,0 +1,1068 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>MLP vs KAN - Analysis </title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="963cc0f3-686e-413d-847a-d1b08e688110" class="page sans"><header><h1 class="page-title">MLP vs KAN - Analysis </h1><p class="page-description"></p></header><div class="page-body"><h1 id="462ccc9b-ec7a-4908-8e3d-c14582a96ad1" class="">Short overview of the Methods</h1><h3 id="09d8bbe9-0937-44d4-93ed-c84351b0b214" class="">Kolmogorov-Arnold Network</h3><p id="aaa62b00-4614-4ae9-bd41-135716946e9c" class="">The theoretical pillar of these new networks is a theory developed by two Soviet mathematicians, <a href="https://en.wikipedia.org/wiki/Vladimir_Arnold">Vladimir Arnold</a> and <a href="https://en.wikipedia.org/wiki/Andrey_Kolmogorov">Andrey Kolmogorov</a>.</p><p id="b0433afb-ceee-4371-8ea4-0304b676be07" class="">The theory that they worked on and eventually developed was based on the concept of multivariate continuous functions. According to this theory, any multivariate continuous function <strong>f </strong>can be written as a finite composition of continuous functions of a single variable, summed together.<br/><br/></p><figure id="bd471c5d-f1f2-4b7d-a912-44bf7b547b15" class="image"><a href="MLP%20vs%20KAN%20-%20Analysis%20963cc0f3686e413d847ad1b08e688110/Untitled.png"><img style="width:576px" src="MLP%20vs%20KAN%20-%20Analysis%20963cc0f3686e413d847ad1b08e688110/Untitled.png"/></a></figure><blockquote id="977e93a2-19f5-4c3f-896d-082da39edc95" class=""><strong>How Does This Theorem Fit into Machine Learning?</strong></blockquote><p id="08762d6a-d7f8-40f1-bf00-7c167d8b0258" class="">In machine learning, the ability to <strong>efficiently</strong> and <strong>accurately </strong>approximate complex functions is an important subject, especially as the dimensionality of data increases. Current mainstream models such as Multi-Layer Perceptrons (MLPs) often struggle with high-dimensional data — a phenomenon known as the <strong><a href="https://en.wikipedia.org/wiki/Curse_of_dimensionality">curse of dimensionality</a></strong>.</p><p id="0d40099a-e9a8-44ee-89ec-a08b866630b5" class="">The Kolmogorov-Arnold theorem, however, provides a theoretical foundation for building networks (like KANs) that can overcome this challenge.</p><blockquote id="7fba0d56-b568-49f4-a9e6-2fd16e681026" class=""><strong>How can KAN avoid the curse of dimensionality?</strong></blockquote><p id="95203e8e-46a8-428b-afb0-00646c824115" class="">This theorem allows for the decomposition of complex high-dimensional functions into compositions of simpler one-dimensional functions. By focusing on optimizing these one-dimensional functions rather than the entire multivariate space, KANs reduce the complexity and the number of parameters needed to achieve accurate modeling. Furthermore, Because of working with simpler one-dimensional functions, KANs can be simple and interpretable models.</p><blockquote id="3c3a2f3a-dc9d-4ee1-b26b-e02c36c81453" class="">So what is Kolmogorov-Arnold Network?</blockquote><p id="e969f072-c5e0-456f-b288-822cc411efaf" class="">Unlike traditional neural networks that use<strong> fixed activation functions</strong>, KANs employ <strong>learnable activation</strong> functions on the <strong>edges </strong>of the network. This allows every weight parameter in a KAN to be replaced by a univariate function, typically parameterized as a <strong>spline</strong>, making them highly flexible and capable of modeling complex functions with potentially fewer parameters and enhanced interpretability.<br/><br/><br/></p><figure id="43b32feb-4a76-4d44-9ca6-44c72bffa7f2" class="image"><a href="MLP%20vs%20KAN%20-%20Analysis%20963cc0f3686e413d847ad1b08e688110/Untitled%201.png"><img style="width:840px" src="MLP%20vs%20KAN%20-%20Analysis%20963cc0f3686e413d847ad1b08e688110/Untitled%201.png"/></a></figure><p id="d4098948-4d32-45a7-be20-5ef5e9211b58" class="">The architecture of Kolmogorov-Arnold Networks (KANs) revolves around a novel concept where traditional weight parameters are replaced by univariate function parameters on the edges of the network. Each node in a KAN sums up these function outputs without applying any nonlinear transformations, in contrast with MLPs that include linear transformations followed by nonlinear activation functions.</p><blockquote id="00cfafee-5540-4e8f-8893-1fce56eec0be" class="">The core of KAN - Splines</blockquote><p id="13860897-3d94-432f-b65a-9fd5b69a77cf" class="">The flexibility of splines allows them to adaptively model complex relationships in the data by adjusting their shape to minimize approximation error, therefore, enhancing the network’s capability to learn subtle patterns from high-dimensional datasets.</p><p id="f073ea5e-b2f4-440e-a61e-195a06aca9c6" class="">The general formula for a spline in the context of KANs can be expressed using B-splines as follows:</p><figure id="5fdc68e3-e1da-490d-9790-61475cc47c74" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>s</mi><mi>p</mi><mi>l</mi><mi>i</mi><mi>n</mi><mi>e</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mo>∑</mo><msub><mi>c</mi><mi>i</mi></msub><msub><mi>B</mi><mi>i</mi></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">spline(x) = \sum c_iB_i(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.01968em;">pl</span><span class="mord mathnormal">in</span><span class="mord mathnormal">e</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.6em;vertical-align:-0.55em;"></span><span class="mop op-symbol large-op" style="position:relative;top:0em;">∑</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0502em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span></div></figure><p id="7be9215e-e555-4127-9c32-49f1a5e98bfe" class="">Here, <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑠</mi><mi>p</mi><mi>l</mi><mi>i</mi><mi>n</mi><mi>e</mi><mo stretchy="false">(</mo><mi>𝑥</mi><mo stretchy="false">)</mo><mtext> </mtext></mrow><annotation encoding="application/x-tex">𝑠pline(𝑥) </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.01968em;">pl</span><span class="mord mathnormal">in</span><span class="mord mathnormal">e</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mord"> </span></span></span></span></span><span>﻿</span></span>represents the spline function. c<em>i</em> are the coefficients that are optimized during training, and 𝐵𝑖(𝑥) are the B-spline basis functions defined over a grid. The grid points define the intervals where each basis function 𝐵𝑖 is active and significantly affects the <strong>shape </strong>and <strong>smoothness </strong>of the spline. You can think of them as a <strong>hyperparameter </strong>that affects the accuracy of the network. More grids mean <strong>more control</strong> and <strong>precision</strong>, also resulting in more parameters to learn</p><p id="e0a4f364-c6fb-4deb-918b-30e8a2233242" class=""><br/><br/><br/></p><figure id="e6b271b7-826f-4f13-b2de-77d59711ecc0" class="image" style="text-align:center"><a href="https://private-user-images.githubusercontent.com/23551623/326875588-e9f215c7-a393-46b9-8528-c906878f015e.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTgzOTQ1NDIsIm5iZiI6MTcxODM5NDI0MiwicGF0aCI6Ii8yMzU1MTYyMy8zMjY4NzU1ODgtZTlmMjE1YzctYTM5My00NmI5LTg1MjgtYzkwNjg3OGYwMTVlLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA2MTQlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNjE0VDE5NDQwMlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTgwYTc4ZTk3Yjg1NGM3NTI4NjZkZGVkOWNjOTBjMDBmNTk2ZTM4M2VjMzMxNmU4MGE5ODc3MWM1NzQ4ODBlYTAmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.PYGWZOwXJy50dHLBJitKtCBrRm_oGABmcWtiNUbHrWg"><img style="width:576px" src="https://private-user-images.githubusercontent.com/23551623/326875588-e9f215c7-a393-46b9-8528-c906878f015e.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTgzOTQ1NDIsIm5iZiI6MTcxODM5NDI0MiwicGF0aCI6Ii8yMzU1MTYyMy8zMjY4NzU1ODgtZTlmMjE1YzctYTM5My00NmI5LTg1MjgtYzkwNjg3OGYwMTVlLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA2MTQlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNjE0VDE5NDQwMlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTgwYTc4ZTk3Yjg1NGM3NTI4NjZkZGVkOWNjOTBjMDBmNTk2ZTM4M2VjMzMxNmU4MGE5ODc3MWM1NzQ4ODBlYTAmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.PYGWZOwXJy50dHLBJitKtCBrRm_oGABmcWtiNUbHrWg"/></a></figure><p id="c91fe233-b3d5-4660-82a1-d025cb35b9ad" class="">During training, the <em>ci </em>parameters of these splines (the coefficients of the basis functions <em>Bi(x) </em>) are optimized to <strong>minimize the loss function</strong>, thus adjusting the shape of the spline to best fit the training data. This optimization often involves techniques like <a href="https://en.wikipedia.org/wiki/Gradient_descent">gradient descent</a>, where each iteration updates the spline parameters to reduce prediction error.<br/><br/></p><blockquote id="c7fc9e99-b745-4c78-88e9-f43ea76729d8" class="">Little Overview of the network </blockquote><figure id="926c5a8f-5640-43e9-bedb-73b67d360983" class="image"><a href="MLP%20vs%20KAN%20-%20Analysis%20963cc0f3686e413d847ad1b08e688110/Untitled%202.png"><img style="width:943px" src="MLP%20vs%20KAN%20-%20Analysis%20963cc0f3686e413d847ad1b08e688110/Untitled%202.png"/></a></figure><blockquote id="6f54a3ad-ae82-4c3b-91f3-af7185c0d13b" class="">Other Aspects of KAN</blockquote><p id="375557c3-b03c-4879-937c-e7cc3bd28ff5" class=""><strong>Pruning</strong>: The other aspect of KANs discussed in the paper is about optimizing the network architecture by <strong>removing less important nodes</strong> or connections after the network has been trained. This process helps in reducing the complexity and size. Pruning focuses on identifying and eliminating those parts of the network that contribute minimally to the output. This makes the network lighter and potentially more interpretable<br/><br/></p><blockquote id="f302c952-7931-4c17-be14-c23c821c1441" class="">So is KAN new ? if not why wasn’t it adapted and used ? Why the hype now?</blockquote><p id="3bb8cc5a-6035-49b0-9e4c-06344df6373e" class="">To quote the original KAN paper </p><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="b018caa9-87a4-40c0-9266-dc1ef169c942"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%"><em>Multiple Attempts have been made However, most work has stuck with the original depth-2 width-(2n + 1) representation, and did not have the chance to leverage more modern techniques (e.g., back propagation) to train the networks.</em></div></figure><h3 id="894ec2c8-3c37-4eae-b3e7-c587531d283c" class="">MLP</h3><p id="61288374-22fc-42f9-b091-46c6b9294805" class="">Since we have studied MLP’s in our class overview will be shorter</p><blockquote id="d67c9c2e-1bdb-4950-9d05-56301edb221f" class="">What is Multilayer Perceptron(MLP)?</blockquote><p id="f2919de0-d7e8-42d4-9400-ff1513123d67" class="">In the Multilayer perceptron, there can more than one linear layer (combinations of <strong>neurons</strong>). If we take the simple example the three-layer network, first layer will be the <em>input layer</em> and last will be <em>output layer</em> and middle layer will be called <em>hidden layer. </em>We feed our input data into the input layer and take the output from the output layer. We can increase the number of the hidden layer as much as we want, to make the model more complex according to our task.<br/><br/><br/></p><figure id="bd464b8c-bf4f-4f36-a25e-b4d9ffeb9a1c" class="image"><a href="MLP%20vs%20KAN%20-%20Analysis%20963cc0f3686e413d847ad1b08e688110/Untitled%203.png"><img style="width:512px" src="MLP%20vs%20KAN%20-%20Analysis%20963cc0f3686e413d847ad1b08e688110/Untitled%203.png"/></a></figure><p id="9e6ed9d9-0bd2-43b2-b98c-b21f220887bb" class="">In a supervised classification system, each input vector is associated with a label, or ground truth, defining its class or class label is given with the data. The output of the network gives a class score, or prediction, for each input. To measure the performance of the classifier, the loss function is defined. The loss will be high if the predicted class does not correspond to the true class, it will be low otherwise. Sometimes the problem of overfitting and underfitting occurs at the time of training the model. In this case, Our model performs very well on training data but not on testing data. In order to train the network, an optimization procedure is required for this we need loss function and an optimizer. This procedure will find the values for the set of weights, W that minimizes the loss function.<br/><br/>A popular strategy is to initialize the weights to random values and refine them iteratively to get a lower loss. This refinement is achieved by moving on the direction defined by the gradient of the loss function. And it is important to set a learning rate defining the amount in which the algorithm is moving in every iteration<br/></p><p id="74acb021-a67b-426d-a53e-63578e5f34a0" class="">Activation functions also known non- linearity, describe the input-output relations in a non-linear way. This gives the model power to be more flexible in describing arbitrary relations. Here are some popular activation functions Sigmoid, Relu, and TanH</p><p id="cd1c8ef5-9889-4d29-9811-80ba68b84a1d" class="">
+</p><blockquote id="099d1088-4e18-4f40-ae76-9d8306747a4b" class="">Training the model</blockquote><p id="ee8d7c9b-e596-43cb-93c6-dfa70e9cee2e" class="">There are basically three steps in the training of the model (All of these discussed in our class).</p><ol type="1" id="af77bbc6-6933-4eaf-8e59-07afd35b63dd" class="numbered-list" start="1"><li>Forward pass</li></ol><ol type="1" id="c83ced49-1fa5-402c-8384-00a28dd57c92" class="numbered-list" start="2"><li>Calculate error or loss</li></ol><ol type="1" id="e0a81e6d-4c49-42ed-8576-93bea95fc7a8" class="numbered-list" start="3"><li>Backward pass</li></ol><p id="dcf6df06-6f09-433d-8842-144e0ce53be5" class="">
+</p><hr id="eebf4128-5211-4c0e-9026-f409deec42a2"/><h3 id="b761dcb8-89f4-48be-ad57-1aa5b2f8cdb7" class="">Now that we know how MLP and KAN works - How do they compare to each other?</h3><ul id="e00290b4-420e-411e-9327-d6b20e1df9c0" class="bulleted-list"><li style="list-style-type:disc">Architecture</li></ul><figure id="17896725-fc29-4adf-a9b2-e16048df9a80" class="image"><a href="MLP%20vs%20KAN%20-%20Analysis%20963cc0f3686e413d847ad1b08e688110/Untitled%204.png"><img style="width:863px" src="MLP%20vs%20KAN%20-%20Analysis%20963cc0f3686e413d847ad1b08e688110/Untitled%204.png"/></a></figure><ul id="9b63b3cb-50b3-480e-b0e0-05485654e520" class="bulleted-list"><li style="list-style-type:disc">General Overview</li></ul><figure id="11a964a3-06f4-474f-918e-114b48bf3016" class="image"><a href="MLP%20vs%20KAN%20-%20Analysis%20963cc0f3686e413d847ad1b08e688110/Untitled%205.png"><img style="width:835px" src="MLP%20vs%20KAN%20-%20Analysis%20963cc0f3686e413d847ad1b08e688110/Untitled%205.png"/></a></figure><ul id="62756f11-913e-4459-8dc9-5bbb20249c50" class="bulleted-list"><li style="list-style-type:disc">Turning MLP and KAN into code<ul id="0ccc7742-3ae5-4f79-a531-4c63bce7c19c" class="bulleted-list"><li style="list-style-type:circle">MLP </li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="8a958262-aa07-43e5-b7c4-cd544f569d09" class="code"><code class="language-Python">class MLP:
+    def __init__(self, hidden_layers, input_data, data_labels):
+        self.hidden_layers = hidden_layers
+        self.input_data = input_data
+        self.data_labels = data_labels
+        input_size = self.input_data.shape[1]
+        output_size = self.data_labels.shape[1]
+        self.weights, self.biases = initialize_weights_biases_mlp(self.hidden_layers, input_size, output_size)
+
+    def sigmoid(self, x):
+        return 1 / (1 + np.exp(-x))
+
+    def sigmoid_derivative(self, x):
+        return x * (1 - x)
+
+    def train(self, epochs, learning_rate=0.01):
+        correct_guesses = 0
+        log_file = open(&#x27;mlp_logs.txt&#x27;, &#x27;w&#x27;)
+        original_stdout = sys.stdout
+
+        try:
+            sys.stdout = log_file
+            for epoch in range(epochs):
+                for img, l in zip(self.input_data, self.data_labels):
+                    img = img.reshape(-1, 1)
+                    l = l.reshape(-1, 1)
+
+                    # Forward propagation
+                    activations = [img]
+                    for w, b in zip(self.weights, self.biases):
+                        z = np.dot(w, activations[-1]) + b
+                        activation = self.sigmoid(z)
+                        activations.append(activation)
+
+                    # Cost / Error calculation
+                    output = activations[-1]
+                    error = 1 / len(output) * np.sum((output - l) ** 2, axis=0)
+                    correct_guesses += int(np.argmax(output) == np.argmax(l))
+
+                    # Backpropagation
+                    delta = output - l
+                    for i in reversed(range(len(self.weights))):
+                        delta_w = np.dot(delta, activations[i].T)
+                        delta_b = delta
+                        self.weights[i] -= learning_rate * delta_w
+                        self.biases[i] -= learning_rate * delta_b
+
+                        if i != 0:
+                            delta = np.dot(self.weights[i].T, delta) * self.sigmoid_derivative(activations[i])
+                # Show accuracy for this epoch
+                accuracy = round((correct_guesses / self.input_data.shape[0]) * 100, 2)
+                print(f&quot;Epoch {epoch + 1}/{epochs}, Accuracy: {accuracy}%&quot;)
+                correct_guesses = 0
+        finally:
+            sys.stdout = original_stdout
+            log_file.close()
+
+    def predict(self, img):
+        img.shape += (1,)
+        # Forward propagation
+        activations = [img]
+        for w, b in zip(self.weights, self.biases):
+            z = np.dot(w, activations[-1]) + b
+            activation = self.sigmoid(z)
+            activations.append(activation)
+        return activations[-1].argmax()</code></pre><ul id="c986e851-ba52-4d4e-ab75-047d6f2264e5" class="bulleted-list"><li style="list-style-type:circle">KAN </li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="e7bbd47d-00a7-42d1-b174-773fa0241f4d" class="code"><code class="language-Python">class KANLinear(torch.nn.Module):
+    def __init__(
+            self,
+            in_features,
+            out_features,
+            grid_size=5,
+            spline_order=3,
+            scale_noise=0.1,
+            scale_base=1.0,
+            scale_spline=1.0,
+            enable_standalone_scale_spline=True,
+            base_activation=torch.nn.SiLU,
+            grid_eps=0.02,
+            grid_range=[-1, 1],
+    ):
+        super(KANLinear, self).__init__()
+        self.in_features = in_features
+        self.out_features = out_features
+        self.grid_size = grid_size
+        self.spline_order = spline_order
+
+        h = (grid_range[1] - grid_range[0]) / grid_size
+        grid = (
+            (
+                    torch.arange(-spline_order, grid_size + spline_order + 1) * h
+                    + grid_range[0]
+            )
+            .expand(in_features, -1)
+            .contiguous()
+        )
+        self.register_buffer(&quot;grid&quot;, grid)
+
+        self.base_weight = torch.nn.Parameter(torch.Tensor(out_features, in_features))
+        self.spline_weight = torch.nn.Parameter(
+            torch.Tensor(out_features, in_features, grid_size + spline_order)
+        )
+        if enable_standalone_scale_spline:
+            self.spline_scaler = torch.nn.Parameter(
+                torch.Tensor(out_features, in_features)
+            )
+
+        self.scale_noise = scale_noise
+        self.scale_base = scale_base
+        self.scale_spline = scale_spline
+        self.enable_standalone_scale_spline = enable_standalone_scale_spline
+        self.base_activation = base_activation()
+        self.grid_eps = grid_eps
+
+        self.reset_parameters()
+
+    def reset_parameters(self):
+        torch.nn.init.kaiming_uniform_(self.base_weight, a=math.sqrt(5) * self.scale_base)
+        with torch.no_grad():
+            noise = (
+                    (
+                            torch.rand(self.grid_size + 1, self.in_features, self.out_features)
+                            - 1 / 2
+                    )
+                    * self.scale_noise
+                    / self.grid_size
+            )
+            self.spline_weight.data.copy_(
+                (self.scale_spline if not self.enable_standalone_scale_spline else 1.0)
+                * self.curve2coeff(
+                    self.grid.T[self.spline_order: -self.spline_order],
+                    noise,
+                )
+            )
+            if self.enable_standalone_scale_spline:
+                # torch.nn.init.constant_(self.spline_scaler, self.scale_spline)
+                torch.nn.init.kaiming_uniform_(self.spline_scaler, a=math.sqrt(5) * self.scale_spline)
+
+    def b_splines(self, x: torch.Tensor):
+        &quot;&quot;&quot;
+        Compute the B-spline bases for the given input tensor.
+
+        Args:
+            x (torch.Tensor): Input tensor of shape (batch_size, in_features).
+
+        Returns:
+            torch.Tensor: B-spline bases tensor of shape (batch_size, in_features, grid_size + spline_order).
+        &quot;&quot;&quot;
+        assert x.dim() == 2 and x.size(1) == self.in_features
+
+        grid: torch.Tensor = (
+            self.grid
+        )  # (in_features, grid_size + 2 * spline_order + 1)
+        x = x.unsqueeze(-1)
+        bases = ((x &gt;= grid[:, :-1]) &amp; (x &lt; grid[:, 1:])).to(x.dtype)
+        for k in range(1, self.spline_order + 1):
+            bases = (
+                            (x - grid[:, : -(k + 1)])
+                            / (grid[:, k:-1] - grid[:, : -(k + 1)])
+                            * bases[:, :, :-1]
+                    ) + (
+                            (grid[:, k + 1:] - x)
+                            / (grid[:, k + 1:] - grid[:, 1:(-k)])
+                            * bases[:, :, 1:]
+                    )
+
+        assert bases.size() == (
+            x.size(0),
+            self.in_features,
+            self.grid_size + self.spline_order,
+        )
+        return bases.contiguous()
+
+    def curve2coeff(self, x: torch.Tensor, y: torch.Tensor):
+        &quot;&quot;&quot;
+        Compute the coefficients of the curve that interpolates the given points.
+
+        Args:
+            x (torch.Tensor): Input tensor of shape (batch_size, in_features).
+            y (torch.Tensor): Output tensor of shape (batch_size, in_features, out_features).
+
+        Returns:
+            torch.Tensor: Coefficients tensor of shape (out_features, in_features, grid_size + spline_order).
+        &quot;&quot;&quot;
+        assert x.dim() == 2 and x.size(1) == self.in_features
+        assert y.size() == (x.size(0), self.in_features, self.out_features)
+
+        A = self.b_splines(x).transpose(
+            0, 1
+        )  # (in_features, batch_size, grid_size + spline_order)
+        B = y.transpose(0, 1)  # (in_features, batch_size, out_features)
+        solution = torch.linalg.lstsq(
+            A, B
+        ).solution  # (in_features, grid_size + spline_order, out_features)
+        result = solution.permute(
+            2, 0, 1
+        )  # (out_features, in_features, grid_size + spline_order)
+
+        assert result.size() == (
+            self.out_features,
+            self.in_features,
+            self.grid_size + self.spline_order,
+        )
+        return result.contiguous()
+
+    @property
+    def scaled_spline_weight(self):
+        return self.spline_weight * (
+            self.spline_scaler.unsqueeze(-1)
+            if self.enable_standalone_scale_spline
+            else 1.0
+        )
+
+    def forward(self, x: torch.Tensor):
+        assert x.size(-1) == self.in_features
+        original_shape = x.shape
+        x = x.view(-1, self.in_features)
+
+        base_output = F.linear(self.base_activation(x), self.base_weight)
+        spline_output = F.linear(
+            self.b_splines(x).view(x.size(0), -1),
+            self.scaled_spline_weight.view(self.out_features, -1),
+        )
+        output = base_output + spline_output
+
+        output = output.view(*original_shape[:-1], self.out_features)
+        return output
+
+    @torch.no_grad()
+    def update_grid(self, x: torch.Tensor, margin=0.01):
+        assert x.dim() == 2 and x.size(1) == self.in_features
+        batch = x.size(0)
+
+        splines = self.b_splines(x)  # (batch, in, coeff)
+        splines = splines.permute(1, 0, 2)  # (in, batch, coeff)
+        orig_coeff = self.scaled_spline_weight  # (out, in, coeff)
+        orig_coeff = orig_coeff.permute(1, 2, 0)  # (in, coeff, out)
+        unreduced_spline_output = torch.bmm(splines, orig_coeff)  # (in, batch, out)
+        unreduced_spline_output = unreduced_spline_output.permute(
+            1, 0, 2
+        )  # (batch, in, out)
+
+        # sort each channel individually to collect data distribution
+        x_sorted = torch.sort(x, dim=0)[0]
+        grid_adaptive = x_sorted[
+            torch.linspace(
+                0, batch - 1, self.grid_size + 1, dtype=torch.int64, device=x.device
+            )
+        ]
+
+        uniform_step = (x_sorted[-1] - x_sorted[0] + 2 * margin) / self.grid_size
+        grid_uniform = (
+                torch.arange(
+                    self.grid_size + 1, dtype=torch.float32, device=x.device
+                ).unsqueeze(1)
+                * uniform_step
+                + x_sorted[0]
+                - margin
+        )
+
+        grid = self.grid_eps * grid_uniform + (1 - self.grid_eps) * grid_adaptive
+        grid = torch.concatenate(
+            [
+                grid[:1]
+                - uniform_step
+                * torch.arange(self.spline_order, 0, -1, device=x.device).unsqueeze(1),
+                grid,
+                grid[-1:]
+                + uniform_step
+                * torch.arange(1, self.spline_order + 1, device=x.device).unsqueeze(1),
+            ],
+            dim=0,
+        )
+
+        self.grid.copy_(grid.T)
+        self.spline_weight.data.copy_(self.curve2coeff(x, unreduced_spline_output))
+
+    def regularization_loss(self, regularize_activation=1.0, regularize_entropy=1.0):
+        l1_fake = self.spline_weight.abs().mean(-1)
+        regularization_loss_activation = l1_fake.sum()
+        p = l1_fake / regularization_loss_activation
+        regularization_loss_entropy = -torch.sum(p * p.log())
+        return (
+                regularize_activation * regularization_loss_activation
+                + regularize_entropy * regularization_loss_entropy
+        )
+
+
+class KAN(torch.nn.Module):
+    def __init__(
+            self,
+            layers_hidden,
+            grid_size=5,
+            spline_order=3,
+            scale_noise=0.1,
+            scale_base=1.0,
+            scale_spline=1.0,
+            base_activation=torch.nn.SiLU,
+            grid_eps=0.02,
+            grid_range=[-1, 1],
+    ):
+        super(KAN, self).__init__()
+        self.grid_size = grid_size
+        self.spline_order = spline_order
+
+        self.layers = torch.nn.ModuleList()
+        for in_features, out_features in zip(layers_hidden, layers_hidden[1:]):
+            self.layers.append(
+                KANLinear(
+                    in_features,
+                    out_features,
+                    grid_size=grid_size,
+                    spline_order=spline_order,
+                    scale_noise=scale_noise,
+                    scale_base=scale_base,
+                    scale_spline=scale_spline,
+                    base_activation=base_activation,
+                    grid_eps=grid_eps,
+                    grid_range=grid_range,
+                )
+            )
+
+    def forward(self, x: torch.Tensor, update_grid=False):
+        for layer in self.layers:
+            if update_grid:
+                layer.update_grid(x)
+            x = layer(x)
+        return x
+
+    def regularization_loss(self, regularize_activation=1.0, regularize_entropy=1.0):
+        return sum(
+            layer.regularization_loss(regularize_activation, regularize_entropy)
+            for layer in self.layers
+        )
+
+
+class InitializeKan(nn.Module):
+    def __init__(self, hidden_layers, input_size):
+        super(InitializeKan, self).__init__()
+        self.input_layer = nn.Linear(input_size, hidden_layers[0])
+        self.kan = KAN(layers_hidden=hidden_layers)
+
+    def forward(self, x):
+        x = self.input_layer(x)
+        x = self.kan(x)
+        return x
+</code></pre></li></ul><p id="8bb3babb-c45e-4ac8-bd68-b259c1037b6e" class="">Our thoughts on implementation - As visible MLP (simple form) is implemented without any python libraries purely from scratch , very smooth developing process, easy to debug. KAN was implemented with the help of <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mi>o</mi><mi>r</mi><mi>c</mi><mi>h</mi></mrow><annotation encoding="application/x-tex">torch</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">t</span><span class="mord mathnormal">orc</span><span class="mord mathnormal">h</span></span></span></span></span><span>﻿</span></span> library , core functionality and logic was written by us. While it was possible to write it without the third-party libraries we decided it would take too much effort to write everything from scratch since our approach took a lot of debugging, image the effort it would’ve taken to write KAN from scratch. </p><p id="0c1a5b9c-8f00-4fd7-a7cd-116b5ecd4021" class="">Alongside implementing this methods , we implemented some helper functions which can found at projecst’s github. <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>o</mi><mi>d</mi><mi>e</mi><mi>l</mi><mi>s</mi><mi mathvariant="normal">/</mi><mi>u</mi><mi>t</mi><mi>i</mi><mi>l</mi><mi>s</mi><mi mathvariant="normal">.</mi><mi>p</mi><mi>y</mi></mrow><annotation encoding="application/x-tex">models/utils.py</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">m</span><span class="mord mathnormal">o</span><span class="mord mathnormal">d</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">s</span><span class="mord">/</span><span class="mord mathnormal">u</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">s</span><span class="mord">.</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span></span><span>﻿</span></span>, <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mi>e</mi><mi>n</mi><mi>e</mi><mi>r</mi><mi>a</mi><mi>t</mi><mi>o</mi><mi>r</mi><mi>s</mi><mi mathvariant="normal">/</mi><mi>p</mi><mi>o</mi><mi>l</mi><mi>y</mi><mi>g</mi><mi>o</mi><mi>n</mi><mi mathvariant="normal">.</mi><mi>p</mi><mi>y</mi></mrow><annotation encoding="application/x-tex">generators/polygon.py</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal" style="margin-right:0.02778em;">er</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal">ors</span><span class="mord">/</span><span class="mord mathnormal">p</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord">.</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span></span><span>﻿</span></span>.</p><p id="58f29c5c-680b-4f05-851d-94f9c1de6fc3" class="">Conclusions - Implementing MLP was easier than implementing KAN. while MLP took knowing of matrix multiplications, KAN took more mathematical knowledge.</p><h3 id="aa4d4178-3d64-418c-845f-4bf9add03622" class="">Testing</h3><p id="60c6710c-f4d8-4de5-93fe-15e034e1f786" class="">We decided to test our implemented methods on classification problems.</p><ul id="55e9b865-8870-4513-921c-6f5560801fbb" class="bulleted-list"><li style="list-style-type:disc">Test Data - Given that there are more than enough classification datas such as <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>n</mi><mi>i</mi><mi>s</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">mnist</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">mni</span><span class="mord mathnormal">s</span><span class="mord mathnormal">t</span></span></span></span></span><span>﻿</span></span> and others we felt that would be overly boring since there are a lot of examples and created our slightly less boring and ugly looking dataset with python to draw polygons and classify them. given that image classification is not always useful to use on <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mi>D</mi></mrow><annotation encoding="application/x-tex">HD</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">HD</span></span></span></span></span><span>﻿</span></span> pictures we decided to manually make pixels on the image distorted and unaligned , basically the polygons are not drawn with perfect lines. Images are of size <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>28</mn><mi>x</mi><mn>28</mn></mrow><annotation encoding="application/x-tex">28x28</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">28</span><span class="mord mathnormal">x</span><span class="mord">28</span></span></span></span></span><span>﻿</span></span> for ease of training.</li></ul><h3 id="3048eafb-4c03-4fbf-bdc0-b441944bd0c2" class="">Observed Results</h3><p id="e58adf29-ca04-485f-a7ed-2e8440d0864e" class="">Parameters <br/>hidden layers - <br/><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mn>64</mn><mo separator="true">,</mo><mn>32</mn><mo separator="true">,</mo><mn>16</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[64,32,16]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">64</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">32</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">16</span><span class="mclose">]</span></span></span></span></span><span>﻿</span></span> , learning rate - <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.001</mn></mrow><annotation encoding="application/x-tex">0.001</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.001</span></span></span></span></span><span>﻿</span></span>, epochs - <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn></mrow><annotation encoding="application/x-tex">50</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">50</span></span></span></span></span><span>﻿</span></span>, weights - random</p><p id="094af6d8-45cb-43f1-9a17-b5a68e6469eb" class="">Logs</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="d2336ab2-5349-44cf-9e7b-0765a3502d5c" class="code"><code class="language-Python">KAN
+Epoch [1/50], Loss: 0.2032
+Epoch [2/50], Loss: 0.1826
+Epoch [3/50], Loss: 0.1681
+Epoch [4/50], Loss: 0.1628
+Epoch [5/50], Loss: 0.1575
+Epoch [6/50], Loss: 0.1544
+Epoch [7/50], Loss: 0.1538
+Epoch [8/50], Loss: 0.1516
+Epoch [9/50], Loss: 0.1482
+.....
+.....
+Epoch [47/50], Loss: 0.0357
+Epoch [48/50], Loss: 0.0345
+Epoch [49/50], Loss: 0.0330
+Epoch [50/50], Loss: 0.0318
+
+MLP
+Epoch 1/50, Accuracy: 16.0%
+Epoch 2/50, Accuracy: 20.0%
+Epoch 3/50, Accuracy: 22.0%
+Epoch 4/50, Accuracy: 22.0%
+Epoch 5/50, Accuracy: 24.0%
+Epoch 6/50, Accuracy: 24.0%
+Epoch 7/50, Accuracy: 20.0%
+......
+......
+Epoch 46/50, Accuracy: 24.0%
+Epoch 47/50, Accuracy: 24.0%
+Epoch 48/50, Accuracy: 24.0%
+Epoch 49/50, Accuracy: 24.0%
+Epoch 50/50, Accuracy: 24.0%</code></pre><p id="40b035f2-35a8-4d8e-9a89-f82e9a6b0cdc" class="">As we can see KAN model learns blazingly fast with a minimal lost with given parameters but MLP fails and as expected makes a wrong classification</p><figure id="1444ed05-1ebd-483c-be44-e68f2483c18f" class="image"><a href="MLP%20vs%20KAN%20-%20Analysis%20963cc0f3686e413d847ad1b08e688110/Untitled%206.png"><img style="width:806px" src="MLP%20vs%20KAN%20-%20Analysis%20963cc0f3686e413d847ad1b08e688110/Untitled%206.png"/></a></figure><p id="f5b77aeb-468f-4e96-8efc-4b835fe8aec4" class="">Switching up the parameters , given the same parameters but now lets choose different hidden layers for MLP -<style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mn>20</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[20]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">20</span><span class="mclose">]</span></span></span></span></span><span>﻿</span></span></p><p id="e2809615-373e-4585-af57-edc66ef7be80" class="">logs </p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="650c7ded-459c-40f3-aa53-700d1f9f1f4f" class="code"><code class="language-Python">Epoch 1/50, Accuracy: 20.0%
+Epoch 2/50, Accuracy: 22.0%
+Epoch 3/50, Accuracy: 22.0%
+Epoch 4/50, Accuracy: 22.0%
+Epoch 5/50, Accuracy: 22.0%
+...
+Epoch 47/50, Accuracy: 40.0%
+Epoch 48/50, Accuracy: 42.0%
+Epoch 49/50, Accuracy: 42.0%
+Epoch 50/50, Accuracy: 42.0%</code></pre><p id="bad6bb51-6bda-437b-97ea-c450d909145f" class="">Slightly better result but nowhere what KAN gave earlier in 50 iterations</p><p id="26c004bd-c15f-4006-a2db-3a0273a2f956" class="">Increasing the number of iterations to 200 - gives the result of <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>90</mn><mi mathvariant="normal">%</mi></mrow><annotation encoding="application/x-tex">90\%</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8056em;vertical-align:-0.0556em;"></span><span class="mord">90%</span></span></span></span></span><span>﻿</span></span> accuracy. Lets investigate this further.</p><p id="47b97131-19d8-4909-9234-44234e9e20f2" class="">Training KAN with hidden layer of <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mn>20</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[20]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">20</span><span class="mclose">]</span></span></span></span></span><span>﻿</span></span> has loss of <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.02</mn></mrow><annotation encoding="application/x-tex">0.02</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.02</span></span></span></span></span><span>﻿</span></span> even better than the result with <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mn>64</mn><mo separator="true">,</mo><mn>32</mn><mo separator="true">,</mo><mn>16</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[64,32,16]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">64</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">32</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">16</span><span class="mclose">]</span></span></span></span></span><span>﻿</span></span></p><p id="3fe48c78-995f-4d51-8d71-7a0d4b391eaf" class="">
+</p><p id="4e775242-69b5-4610-b5b6-e5b4a818c8f8" class="">More results can be demonstrated in class </p><blockquote id="f737ac61-daa5-40a2-bef3-453edb77f2af" class="">Does this mean KAN is more efficient overall? - Yes!</blockquote><p id="5040320b-fac7-4bc0-8861-5c133f0a3f87" class="">KAN’s efficiency is demonstrated in this experiment by having less parameters , having to need less epochs.</p><p id="a16c4fca-441b-4bd9-8e68-95203fa8d57d" class="">Drawbacks of KAN </p><ul id="019624e1-bdd2-45ba-accf-d025e5256f46" class="bulleted-list"><li style="list-style-type:disc">Slow training - This inefficiency is considered an engineering problem rather than a fundamental limitation, suggesting that there is room for optimization in the future.</li></ul><ul id="781349d1-42c7-4ea4-9dee-bb386406c610" class="bulleted-list"><li style="list-style-type:disc">Curse of Dimensionality</li></ul><ul id="e60a1d8d-7674-449a-9868-96aa5b38995e" class="bulleted-list"><li style="list-style-type:disc">Generalization</li></ul><p id="7fe29819-2369-4007-9b3d-670a749c6839" class="">on the other hand - MLP’s train fast is proven to be generalizable and there are tons of algorithms in place for optimizations</p><h1 id="40db4503-f466-47e8-a198-29b8e9f65dba" class="">Conclusions</h1><p id="e512ca9f-9d80-4870-8987-e1e721c5e77a" class="">Couple of things need to be taken into the consideration, <strong>Implementation</strong> of KAN and MLP , while KAN was implemented with highly efficient libraries , MLP was implemented within the most simple form possible this can have an impact on our experiment. Next, MLP’s have too many different activation functions, which is not possible to test for them all.</p><p id="641efd0d-fd4b-4860-b1c3-3c2d496ca680" class="">
+</p><p id="060b7515-7d7c-4c4e-be09-b61742676df9" class="">Our experiment shows what the KAN paper claims, KAN’s are more efficient with less parameters ,less epochs while MLP’s are fast but inefficient with fewer parameters. MLP’s are scalable while KAN is not (for now)</p><p id="d7ee5f3d-15bd-447a-89d9-4494a1e77c8b" class="">
+</p><p id="3f69e414-9ebe-4af0-9002-2940ed6c462a" class="">Which one should you use?</p><p id="e5527e20-b371-4284-8af6-5d1beb63c2bc" class="">We suggest for Classification problems at least to use KAN it’s slow training is easily overshadowed by its other strengths mentioned above. For other problems that are more complex in nature  we suggest use MLP’s but do not implement them from scratch , use libraries with optimized algorithms , this will give u assurance for correctness in the long run while KAN promises the same it is too early to say.</p><p id="38bbd5ce-91b0-4752-8b6e-9e1923691350" class="">
+</p><hr id="cbd72fac-e986-4c48-8e8a-a1be114476ff"/><p id="66582e22-0c9a-47ab-9d3d-683c9242fbbc" class="">Team Members - Romani Todua, Konstantine Vashalomidze,Vlasi Pirvelashvili,Malkhaz Baghaturia</p><p id="c1e12181-110e-4fab-9eee-ff78843f3130" class="">Special thanks to our professor- Giorgi Mzhavanadze</p><p id="ef88877a-b6e0-4b45-80bb-8b48db792d71" class="">Credits - Images are from KAN paper and Google.</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

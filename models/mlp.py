@@ -5,7 +5,7 @@ import numpy as np
 
 from models.utils import initialize_weights_biases_mlp
 
-
+# see if i can make copilot review the pr
 class MLP:
     def __init__(self, hidden_layers, input_data, data_labels):
         self.hidden_layers = hidden_layers
